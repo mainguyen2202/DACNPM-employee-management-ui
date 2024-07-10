@@ -30,7 +30,7 @@ function Nav() {
 
 
                 // Gọi API với ID từ localStorage
-                const response = await fetch(`http://localhost:8081/api/employees/${storedId}`);
+                const response = await fetch(`http://localhost:8080/api/employees/${storedId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch employee data');
                 }
@@ -72,7 +72,7 @@ function Nav() {
 
             };
             // Gửi dữ liệu
-            fetch(`http://localhost:8081/api/leave-applications/save?employeeId=${storedId}`, {
+            fetch(`http://localhost:8080/api/leave-applications/save?employeeId=${storedId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -134,6 +134,28 @@ function Nav() {
             closePopup();
         }
     };
+
+    const [bossId, setBossId] = useState(null);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const userId = sessionStorage.getItem('userId');
+            fetchBossId(userId);
+        }
+    }, []);
+
+    const fetchBossId = async (userId) => {
+        const response = await fetch(`http://localhost:8080/api/employees/${userId}`, {
+            method: "GET",
+            headers: { 'content-type': 'application/json' }
+        });
+        const userInfo = await response.json();
+        if (userInfo.bossId) {
+            setBossId(userInfo.bossId);
+        }
+    };
+
+    console.log('bossId:', bossId);
     return (
         <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
             <div className="flex items-center flex-shrink-0 text-white mr-6">
@@ -170,7 +192,7 @@ function Nav() {
                     >
                         Home
                     </a>
-                    <a
+                    {/* <a
                         href="/account/leaveList"
                         className={`block mt-4 lg:inline-block lg:mt-0 ${currentPage === 'leaveList' ? 'text-white' : 'text-teal-200'} hover:text-white font-semibold mr-4`}
                         onClick={() => setcurrentPage("leaveList")}
@@ -183,7 +205,25 @@ function Nav() {
                         onClick={() => setcurrentPage("requestList")}
                     >
                         Leave Request
-                    </a>
+                    </a> */}
+
+                    {bossId === null ? (
+                        <a
+                            href="/account/requestList"
+                            className={`block mt-4 lg:inline-block lg:mt-0 ${currentPage === 'requestList' ? 'text-white' : 'text-teal-200'} hover:text-white font-semibold mr-4`}
+                            onClick={() => setcurrentPage("requestList")}
+                        >
+                            Leave Request
+                        </a>
+                    ) : (
+                        <a
+                            href="/account/leaveList"
+                            className={`block mt-4 lg:inline-block lg:mt-0 ${currentPage === 'leaveList' ? 'text-white' : 'text-teal-200'} hover:text-white font-semibold mr-4`}
+                            onClick={() => setcurrentPage("leaveList")}
+                        >
+                            Leave List
+                        </a>
+                    )}
                 </div>
                 <div>
                     <button

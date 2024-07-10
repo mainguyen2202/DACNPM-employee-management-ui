@@ -16,14 +16,14 @@ export default function RequestList() {
         userId = sessionStorage.getItem('userId');
     }
     useEffect(() => {
-        fetch(`http://localhost:8081/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`http://localhost:8080/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
     }, []);
 
     useEffect(() => {
-        fetch(`http://localhost:8081/api/leave-applications/get-by-handle-by/${userId}`)
+        fetch(`http://localhost:8080/api/leave-applications/get-by-handle-by/${userId}`)
             .then((response) => {
                 console.log(response);
                 return response.json()
@@ -72,7 +72,7 @@ export default function RequestList() {
     }, [userId]);
     const getDetailByItineraryId = async (idLeave) => {
         try {
-            const response = await fetch(`http://localhost:8081/api/leave-applications/${idLeave}`);
+            const response = await fetch(`http://localhost:8080/api/leave-applications/${idLeave}`);
             let employeeData = {};
             if (response.ok) {
                 itinerarieData = await response.json();
@@ -104,7 +104,7 @@ export default function RequestList() {
        
     console.log(idLeave);
         try {
-            const response = await fetch(`http://localhost:8081/api/leave-applications/approve/${idLeave}`, {
+            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idLeave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -135,7 +135,7 @@ export default function RequestList() {
     
     const handleApprove = async (idleave, reasonBoss) => {
         try {
-            const response = await fetch(`http://localhost:8081/api/leave-applications/approve/${idleave}`, {
+            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idleave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
