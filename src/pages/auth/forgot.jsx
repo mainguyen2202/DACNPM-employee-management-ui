@@ -8,38 +8,38 @@ import { Layout } from "@/components/account";
 export default function Forgot() {
     const [email, setEmail] = useState('');
     const router = useRouter();
-    const handleSendMail = async (e) => {
-        e.preventDefault();
+    // const handleSendMail = async (e) => {
+    //     e.preventDefault();
 
-        if (!validate()) {
-            return;
-        }
+    //     if (!validate()) {
+    //         return;
+    //     }
 
-        const forgotPasswordDTO = {
-            email: email
-        };
+    //     const forgotPasswordDTO = {
+    //         email: email
+    //     };
 
-        try {
-            // http://localhost:8080
-            // https://employee-leave-api.onrender.com
-            const response = await fetch(" https://employee-leave-api.onrender.com/api/forgot-password/verify-email", {
-                method: "POST",
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify(forgotPasswordDTO)
-            });
+    //     try {
+    //         // https://employee-leave-api.onrender.com
+    //         // https://employee-leave-api.onrender.com
+    //         const response = await fetch(" https://employee-leave-api.onrender.com/api/forgot-password/verify-email", {
+    //             method: "POST",
+    //             headers: { 'content-type': 'application/json' },
+    //             body: JSON.stringify(forgotPasswordDTO)
+    //         });
 
-            console.log("response", response.status);
-            console.log("response", response);
+    //         console.log("response", response.status);
+    //         console.log("response", response);
 
-            if (response.status === 200) {
-                toast.success('Password reset instructions sent to your email.');
-            } else {
-                toast.error('Failed to send password reset email. Please try again.');
-            }
-        } catch (err) {
-            toast.error('Failed: ' + err.message);
-        }
-    };
+    //         if (response.status === 200) {
+    //             toast.success('Password reset instructions sent to your email.');
+    //         } else {
+    //             toast.error('Failed to send password reset email. Please try again.');
+    //         }
+    //     } catch (err) {
+    //         toast.error('Failed: ' + err.message);
+    //     }
+    // };
     const handleSendOTP = async (e) => {
         e.preventDefault();
 
@@ -52,9 +52,9 @@ export default function Forgot() {
         };
 
         try {
-            // http://localhost:8080
             // https://employee-leave-api.onrender.com
-            const response = await fetch(" https://employee-leave-api.onrender.com/api/forgot-password/verify-otp", {
+            // https://employee-leave-api.onrender.com
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/forgot-password/verify-email/${email}`, {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(forgotPasswordDTO)
@@ -104,13 +104,13 @@ export default function Forgot() {
                             className="w-full p-4 mb-4 border border-gray-300 rounded-lg dark:border-neutral-800"
                         />
 
-                        <button
+                        {/* <button
                             type="button"
                             className="w-full p-4 mb-4 text-white bg-gradient-to-r from-sky-500 to-blue-500 rounded-lg"
                             onClick={handleSendMail}
                         >
                             Send Mail
-                        </button>
+                        </button> */}
 
                         <button
                             type="button"

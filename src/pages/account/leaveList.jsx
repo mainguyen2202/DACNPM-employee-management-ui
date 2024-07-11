@@ -15,7 +15,6 @@ export default function LeaveList() {
         ssr: false
     })
     const [leaveList, setLeaveList] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [userInfo, setUserInfo] = useState({});
     let userId = 0;
@@ -25,14 +24,14 @@ export default function LeaveList() {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
     }, []);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/leave-applications/get-by-employee-id/${userId}`)
+        fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-employee-id/${userId}`)
             .then((response) => {
                 console.log(response);
                 return response.json()
@@ -61,26 +60,29 @@ export default function LeaveList() {
         { name: 'From', selector: row => row.from, sortable: true },
         { name: 'To', selector: row => row.to, sortable: true },
         {
-            name: "Trạng thái",
+            name: "Status",
             selector: "status",
             sortable: true,
             cell: (row) => (
-                <div
-                    style={{
-                        padding: "5px 10px",
-                        borderRadius: "4px",
-                        backgroundColor: row.status === 1 ? "#d1f7c4" : "#ffcdd2",
-                        color: row.status === 1 ? "#2e7d32" : "#c62828",
-                        fontWeight: "bold",
-                        display: "inline-block"
-                    }}
-                >
-                    {row.status === 1 ? "Được duyệt" : "Không được duyệt"}
-                </div>
-            )
-        },
+              <div
+                className={`px-3 py-1 rounded-md font-bold ${
+                  row.status === 1
+                    ? "bg-green-100 text-green-700"
+                    : row.status === 0
+                    ? "bg-red-100 text-red-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {row.status === 1
+                  ? "Approved"
+                  : row.status === 0
+                  ? "Rejected"
+                  : "Pending"}
+              </div>
+            ),
+          },
         {
-            name: "Lý do",
+            name: "Reason",
             selector: "reasonReject",
             sortable: true,
             cell: (row) => (
@@ -151,7 +153,7 @@ export default function LeaveList() {
 
     const handleView = async (idLeave) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/${idLeave}`);
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`);
 
             if (response.ok) {
                 const itinerarieData = await response.json();
@@ -175,12 +177,221 @@ export default function LeaveList() {
         setShowModal(false);
     };
 
+
+    // dăng ký nghỉ
+    const [currentPage, setcurrentPage] = useState('leaveList');
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    const openPopup = () => setIsPopupOpen(true);
+    const closePopup = () => setIsPopupOpen(false);
+    const [formData, setFormData] = useState({
+        fullName: "",
+        role: "",
+    });
+
+    useEffect(() => {
+        const fetchEmployeeData = async () => {
+            try {
+                // Lấy ID từ localStorage
+                // const storedId = localStorage.getItem('employeeId');
+                // if (!storedId) {
+                //     throw new Error('Employee ID not found in localStorage');
+                // }
+                const storedId = sessionStorage.getItem('userId');
+                if (!storedId) {
+                    throw new Error('Employee ID not found in localStorage');
+                }
+
+
+                // Gọi API với ID từ localStorage
+                const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${storedId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch employee data');
+                }
+
+                const data = await response.json();
+                console.log(data); // Kiểm tra dữ liệu được trả về từ API
+
+                // Set data to form fields
+                setFormData({
+                    fullName: data.fullName,
+                    role: data.position,
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchEmployeeData();
+    }, []);
+
+    // Nhấn gửi đơn
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const storedId = sessionStorage.getItem('userId');
+        if (!storedId) {
+            throw new Error('Employee ID not found in localStorage');
+        }
+
+        if (!startDate || !endDate) {
+            // Hiển thị cảnh báo nếu ngày không được chọn
+            alert("Vui lòng chọn ngày nghỉ trước khi gửi!");
+            return;
+        } else {
+            const requestData = {
+                reason: event.target.reason.value,
+                from: startDate,
+                to: endDate
+
+            };
+            // Gửi dữ liệu
+            fetch(`https://employee-leave-api.onrender.com/api/leave-applications/save?employeeId=${storedId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Dữ liệu đã được gửi thành công!');
+
+                        closePopup();
+                        alert("Bạn đã gửi đơn đăng ký thành công")
+                        setStartDate("")
+                        setEndDate("")
+                        // Thực hiện các hành động khác (ví dụ: hiển thị thông báo)
+                    } else {
+                        console.error('Đã xảy ra lỗi khi gửi dữ liệu.');
+                        // Xử lý lỗi nếu cần
+                    }
+                })
+                .catch(error => console.error('Lỗi:', error));
+
+
+
+        }
+    };
+
+    const [startDate, setStartDate] = useState('');
+    const handleStartDateChange = (event) => {
+        const selectedDate = event.target.value;
+        const today = new Date();
+        const selected = new Date(selectedDate);
+
+        if (selected < today) {
+            alert('Bạn không thể chọn ngày đã kết thúc.');
+        } else {
+            setStartDate(selectedDate);
+        }
+    };
+    const [endDate, setEndDate] = useState('');
+    const handleEndDateChange = (event) => {
+        const selectedDate = event.target.value;
+        const today = new Date();
+        const selected = new Date(selectedDate);
+
+        if (selected < today) {
+            alert('Bạn không thể chọn ngày đã kết thúc.');
+        } else if (selected < new Date(startDate)) {
+            alert('Ngày kết thúc phải sau ngày bắt đầu.');
+        } else {
+            setEndDate(selectedDate);
+        }
+    };
+
+
+    const closePopupWithConfirmation = () => {
+        const isConfirmed = window.confirm("Bạn có chắc chắn muốn đóng không?");
+        if (isConfirmed) {
+            closePopup();
+        }
+    };
+
     return (
         <Layout>
             <Nav />
-            <div className="flex bg-blue-50">
-                <h1 className="text-2xl font-semibold text-center">Leave List</h1>
+            <div class="flex justify-between items-center bg-blue-50 p-4">
+                <h1 class="text-2xl font-semibold">Leave List</h1>
+                <button class="px-4 py-2 bg-blue-500 text-white rounded-md"
+                 onClick={openPopup}
+                >
+                    Register Leave
+                </button>
+              
+                {isPopupOpen && (
+                    <div className="popup">
+                        <div className="popup-inner p-4 rounded-lg flex bg-blue-50 justify-center">
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-group flex justify-between my-2">
+                                    <label htmlFor="fullName" className="my-auto">Họ tên:</label>
+                                    <input
+                                        type="text"
+                                        id="fullName"
+                                        name="fullName"
+                                        value={formData.fullName}
+                                        className="border-1 outline-none bg-gray-300 pl-2 h-10 rounded-lg w-64 pr-2"
+                                    />
+                                </div>
+                                <div className="form-group flex justify-between my-2">
+                                    <label htmlFor="department" className="my-auto">Chức vụ:</label>
+                                    <input
+                                        type="text"
+                                        id="role"
+                                        name="role"
+                                        value={formData.role}
+                                        className="border-1 outline-none bg-gray-300 pl-2 h-10 rounded-lg w-64 pr-2 ml-16"
+                                    />
+                                </div>
+                                <div className="form-group flex justify-between my-2">
+                                    <label htmlFor="leaveDates" className="my-auto">Ngày bắt đầu: </label>
+
+                                    <input
+                                        type="date"
+                                        className="border-1 outline-none bg-gray-300 pl-2 h-10 rounded-lg w-64 pr-2 ml-16"
+                                        style={{ outline: "none" }}
+                                        value={startDate} // Đặt giá trị của input bằng giá trị của trạng thái
+                                        onChange={handleStartDateChange}
+                                    />
+
+                                </div>
+                                <div className="form-group flex justify-between my-2">
+                                    <label htmlFor="leaveDates" className="my-auto">Ngày kết thúc: </label>
+
+                                    <input
+                                        type="date"
+                                        className="border-1 outline-none bg-gray-300 pl-2 h-10 rounded-lg w-64 pr-2 ml-16"
+                                        style={{ outline: "none" }}
+                                        value={endDate} // Đặt giá trị của input bằng giá trị của trạng thái
+                                        onChange={handleEndDateChange}
+                                    />
+
+                                </div>
+                                <div className="form-group flex justify-between my-2">
+                                    <label htmlFor="reason" className="my-auto">Lý do xin nghỉ:</label>
+                                    <textarea
+                                        id="reason"
+                                        name="reason"
+                                        rows="4"
+                                        className="border-1 outline-none bg-gray-300 pl-2 pt-2 h-16 rounded-lg w-64 pr-2 ml-16"
+                                        maxLength={100}
+                                    ></textarea>
+                                </div>
+                                <div className="form-buttons flex justify-center gap-4 pt-4">
+                                    <button type="button" onClick={closePopupWithConfirmation}
+                                        className="btn bg-red-500 px-4 py-2 rounded-lg text-white"> Hủy
+                                    </button>
+                                    <button type="submit"
+                                        className="btn bg-blue-500 px-4 py-2 rounded-lg text-white"> Gửi
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
+            
             <div className="flex my-10 h-screen bg-blue-50 dark:bg-zinc-800">
                 <div className="container mx-auto">
                     <DataTableExtensions {...tableData}>
@@ -196,6 +407,7 @@ export default function LeaveList() {
                         >
                         </DataTable>
                     </DataTableExtensions>
+
 
                     {showModal && (
                         <div className="modal modal-bg fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">

@@ -25,7 +25,7 @@ export default function RequestList() {
         userId = sessionStorage.getItem('userId');
     }
     useEffect(() => {
-        fetch(`http://localhost:8080/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`https://employee-leave-api.onrender.come-api.onrender.com/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
@@ -34,7 +34,7 @@ export default function RequestList() {
     useEffect(() => {
         const fetchLeaveRequests = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/leave-applications/get-by-handle-by/${userId}`);
+                const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
                 const data = await response.json();
                 setRequestList(data);
             } catch (error) {
@@ -51,26 +51,29 @@ export default function RequestList() {
         { name: 'From', selector: row => row.from, sortable: true },
         { name: 'To', selector: row => row.to, sortable: true },
         {
-            name: "Trạng thái",
+            name: "Status",
             selector: "status",
             sortable: true,
             cell: (row) => (
-                <div
-                    style={{
-                        padding: "5px 10px",
-                        borderRadius: "4px",
-                        backgroundColor: row.status === 1 ? "#d1f7c4" : "#ffcdd2",
-                        color: row.status === 1 ? "#2e7d32" : "#c62828",
-                        fontWeight: "bold",
-                        display: "inline-block"
-                    }}
-                >
-                    {row.status === 1 ? "Được duyệt" : "Không được duyệt"}
-                </div>
-            )
-        },
+              <div
+                className={`px-3 py-1 rounded-md font-bold ${
+                  row.status === 1
+                    ? "bg-green-100 text-green-700"
+                    : row.status === 0
+                    ? "bg-red-100 text-red-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {row.status === 1
+                  ? "Approved"
+                  : row.status === 0
+                  ? "Rejected"
+                  : "Pending"}
+              </div>
+            ),
+          },
         {
-            name: "Lý do",
+            name: "Reason",
             selector: "reasonReject",
             sortable: true,
             cell: (row) => (
@@ -140,7 +143,7 @@ export default function RequestList() {
 
     const handleView = async (idLeave) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/${idLeave}`);
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`);
             let employeeData = {};
             if (response.ok) {
                 itinerarieData = await response.json();
@@ -194,7 +197,7 @@ export default function RequestList() {
 
         console.log(idLeave);
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idLeave}`, {
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/approve/${idLeave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -225,7 +228,7 @@ export default function RequestList() {
 
     const handleApprove = async (idleave, reasonBoss) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idleave}`, {
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/approve/${idleave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

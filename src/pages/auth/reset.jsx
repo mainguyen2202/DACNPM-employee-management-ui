@@ -11,6 +11,17 @@ export default function Reset() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const router = useRouter();
 
+    const [email, setEmail] = useState('20130321@st.hcmuaf.edu.vn');
+
+    // const [email, setEmail] = useState('');
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedEmail = localStorage.getItem('email');
+            if (storedEmail) {
+                setEmail(storedEmail);
+            }
+        }
+    }, []);
 
     const ProceedResetPassword = async (e) => {
         e.preventDefault();
@@ -20,12 +31,12 @@ export default function Reset() {
         }
 
         const resetPasswordDTO = {
-            newPassword: newPassword,
-            confirmPassword: confirmPassword
+            password: newPassword
         };
 
         try {
-            const response = await fetch("http://localhost:8080/api/employees/change-password", {
+            // http://localhost:8080
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/change-password/${email}`, {
                 method: "PUT",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(resetPasswordDTO)
