@@ -33,7 +33,7 @@ export default function Login() {
         try {
             const response = await fetch("http://localhost:8080/api/login", {
                 method: "POST",
-                headers: {'content-type': 'application/json'},
+                headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(loginDTO)
             });
             console.log("response" + response.status);
@@ -44,7 +44,7 @@ export default function Login() {
                     sessionStorage.setItem('userId', userId);
                     const response = await fetch(`http://localhost:8080/api/employees/${userId}`, {
                         method: "GET",
-                        headers: {'content-type': 'application/json'}
+                        headers: { 'content-type': 'application/json' }
                     });
                     const userInfo = await response.json();
                     console.log(userInfo);
@@ -73,7 +73,7 @@ export default function Login() {
             result = false;
             console.log('Please Enter Password');
         }
-        if (pass.length <8) {
+        if (pass.length < 8) {
             result = false;
             console.log('Password must be at least 8 characters long');
             alert('Password must be at least 8 characters long');
@@ -85,7 +85,7 @@ export default function Login() {
             <Layout>
                 <main className="flex min-h-screen flex-col items-center justify-between p-24">
                     <form id="yourFormId"
-                          className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30">
+                        className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30">
                         <h1 className="mb-8 text-3xl font-semibold text-center">Login</h1>
                         <input
                             value={username}
@@ -101,6 +101,11 @@ export default function Login() {
                             type="password"
                             placeholder="Password"
                         />
+                        <p  className="w-full p-4 mb-1  rounded-lg " >
+                            <a href="/auth/forgot" className="text-blue-500">
+                                Forgot password
+                            </a>
+                        </p>
                         <button
                             type="submit"
                             className="w-full p-4 mb-4 text-white bg-gradient-to-r from-sky-500 to-blue-500 rounded-lg"

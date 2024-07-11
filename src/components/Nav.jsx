@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import "./assets/formStyle.css";
 import Datepicker from "react-tailwindcss-datepicker";
 
-export {Nav};
+export { Nav };
 
 function Nav() {
     const [currentPage, setcurrentPage] = useState('leaveList');
@@ -52,7 +52,7 @@ function Nav() {
     }, []);
 
     // Nhấn gửi đơn
-    const handleSubmit =  (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
 
         const storedId = sessionStorage.getItem('userId');
@@ -156,6 +156,16 @@ function Nav() {
     };
 
     console.log('bossId:', bossId);
+
+    const handleLogout = () => {
+        // Perform logout logic here
+        // For example, you could clear the user's session or token
+        // and then redirect them to the login page
+      
+        // Example logout logic
+        localStorage.removeItem('user');
+        window.location.href = '/';
+      };
     return (
         <nav className="flex items-center justify-between flex-wrap bg-teal-500 p-6">
             <div className="flex items-center flex-shrink-0 text-white mr-6">
@@ -191,6 +201,13 @@ function Nav() {
                         onClick={() => setcurrentPage("home")}
                     >
                         Home
+                    </a>
+                    <a
+                        href="#"
+                        className={`block mt-4 lg:inline-block lg:mt-0 ${currentPage === 'logout' ? 'text-white' : 'text-teal-200'} hover:text-white font-semibold mr-4`}
+                        onClick={() => handleLogout()}
+                    >
+                        Logout
                     </a>
                     {/* <a
                         href="/account/leaveList"
@@ -293,10 +310,10 @@ function Nav() {
                                 </div>
                                 <div className="form-buttons flex justify-center gap-4 pt-4">
                                     <button type="button" onClick={closePopupWithConfirmation}
-                                            className="btn bg-red-500 px-4 py-2 rounded-lg text-white"> Hủy
+                                        className="btn bg-red-500 px-4 py-2 rounded-lg text-white"> Hủy
                                     </button>
                                     <button type="submit"
-                                            className="btn bg-blue-500 px-4 py-2 rounded-lg text-white"> Gửi
+                                        className="btn bg-blue-500 px-4 py-2 rounded-lg text-white"> Gửi
                                     </button>
                                 </div>
                             </form>
