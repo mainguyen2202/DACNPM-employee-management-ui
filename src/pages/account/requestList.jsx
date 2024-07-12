@@ -125,20 +125,7 @@ export default function RequestList() {
             selector: "action",
             cell: (row) => (
                 <div>
-                    <button
-                        onClick={() => handleDelete(row.id)}
-                        style={{
-                            padding: "5px 10px",
-                            backgroundColor: "#c62828",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer"
-                        }}
-                    >
-                        <i className="fa fa-trash"></i>
-
-                    </button>
+                 
                     <button
                         onClick={() => handleView(row.id)}
                         style={{
@@ -163,10 +150,7 @@ export default function RequestList() {
     };
     const [showModal, setShowModal] = useState(false);
 
-    const handleDelete = () => {
-        // Implement delete logic here
-        console.log('Delete row:', row.id);
-    };
+
 
     const handleView = async (idLeave) => {
         try {

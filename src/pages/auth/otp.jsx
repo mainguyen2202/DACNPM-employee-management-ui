@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'
 import { Layout } from "@/components/account";
 import "./css/otp.css";
-import {warning,success, showToastRight,error } from "@/services/alert.service";
+import { warning, success, showToastRight, error } from "@/services/alert.service";
 
 export default function Otp() {
     const [verificationCode, setVerificationCode] = useState([]);
@@ -29,6 +29,7 @@ export default function Otp() {
     };
 
     const handleVerify = async (e) => {
+        e.preventDefault();
         try {
             // Construct the request payload
             const payload = {
@@ -48,20 +49,24 @@ export default function Otp() {
                     },
                     body: JSON.stringify(payload),
                 }
-            );
 
-            if (response.ok) {
+            );
+            console.log('response', response);
+
+            if (response.status === 200) {
+
+                // Verification successful, redirect to the password reset page
+                router.push('/auth/reset-password');
                 // Parse the response JSON data
                 const data = await response.json();
 
                 // Check if the verification was successful
-                if (data.success) {
-                    // Verification successful, redirect to the password reset page
-                    router.push('/auth/reset-password');
-                } else {
-                    // Verification failed, display an error message
-                    toast.warning(data.message || 'Invalid verification code. Please try again.');
-                }
+
+
+
+                // Verification failed, display an error message
+                toast.warning(data.message || 'Invalid verification code. Please try again.');
+
             } else {
                 // Verification failed, display an error message
                 toast.error('An error occurred while verifying the code. Please try again later.');

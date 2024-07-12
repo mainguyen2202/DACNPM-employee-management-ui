@@ -66,23 +66,22 @@ export default function LeaveList() {
             selector: "status",
             sortable: true,
             cell: (row) => (
-              <div
-                className={`px-3 py-1 rounded-md font-bold ${
-                  row.status === 1
-                    ? "bg-green-100 text-green-700"
-                    : row.status === 0
-                    ? "bg-red-100 text-red-700"
-                    : "bg-yellow-100 text-yellow-700"
-                }`}
-              >
-                {row.status === 1
-                  ? "Approved"
-                  : row.status === 0
-                  ? "Rejected"
-                  : "Pending"}
-              </div>
+                <div
+                    className={`px-3 py-1 rounded-md font-bold ${row.status === 1
+                        ? "bg-green-100 text-green-700"
+                        : row.status === 0
+                            ? "bg-red-100 text-red-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                >
+                    {row.status === 1
+                        ? "Approved"
+                        : row.status === 0
+                            ? "Rejected"
+                            : "Pending"}
+                </div>
             ),
-          },
+        },
         {
             name: "Reason",
             selector: "reasonReject",
@@ -120,7 +119,7 @@ export default function LeaveList() {
                             cursor: "pointer"
                         }}
                     >
-                        <i className="fa fa-trash">Delete</i>
+                        <i className="fa fa-trash"></i>
 
                     </button>
                     <button
@@ -134,7 +133,7 @@ export default function LeaveList() {
                             cursor: "pointer"
                         }}
                     >
-                        <i className="fas fa-eye">View</i>
+                        <i className="fas fa-eye"></i>
                     </button>
                 </div>
             )
@@ -190,7 +189,7 @@ export default function LeaveList() {
         fullName: "",
         role: "",
     });
-
+    const [dayOffRemaining, setDayOffRemaining] = useState();
     useEffect(() => {
         const fetchEmployeeData = async () => {
             try {
@@ -219,6 +218,10 @@ export default function LeaveList() {
                     fullName: data.fullName,
                     role: data.position,
                 });
+                // Update dayOffRemaining state
+                setDayOffRemaining(data.dayOffRemaining);
+
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -226,7 +229,11 @@ export default function LeaveList() {
 
         fetchEmployeeData();
     }, []);
-
+    function calculateDaysBetweenDates(startDate, endDate) {
+        const oneDay = 24 * 60 * 60 * 1000; // Hours * Minutes * Seconds * Milliseconds
+        const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay));
+        return diffDays + 1; // Add 1 to include the last day
+    }
     // Nhấn gửi đơn
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -237,42 +244,48 @@ export default function LeaveList() {
         }
 
         if (!startDate || !endDate) {
-            // Hiển thị cảnh báo nếu ngày không được chọn
-            alert("Vui lòng chọn ngày nghỉ trước khi gửi!");
+            alert("Please select the leave dates before submitting!");
             return;
         } else {
-            const requestData = {
-                reason: event.target.reason.value,
-                from: startDate,
-                to: endDate
+            const numDaysOff = calculateDaysBetweenDates(new Date(startDate), new Date(endDate));
+            console.log('numDaysOff', numDaysOff);
+            console.log('numDaysOff', dayOffRemaining);
+           
 
-            };
-            // Gửi dữ liệu
-            fetch(`https://employee-leave-api.onrender.com/api/leave-applications/save?employeeId=${storedId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
-            })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Dữ liệu đã được gửi thành công!');
+            // Check if the number of days off is less than or equal to the remaining days off
+            if (parseInt(numDaysOff) <= parseInt(dayOffRemaining)) {
+                const requestData = {
+                    reason: event.target.reason.value,
+                    from: startDate,
+                    to: endDate
+                };
 
-                        closePopup();
-                        alert("Bạn đã gửi đơn đăng ký thành công")
-                        setStartDate("")
-                        setEndDate("")
-                        // Thực hiện các hành động khác (ví dụ: hiển thị thông báo)
-                    } else {
-                        console.error('Đã xảy ra lỗi khi gửi dữ liệu.');
-                        // Xử lý lỗi nếu cần
-                    }
+                // Send the data
+                fetch(`https://employee-leave-api.onrender.com/api/leave-applications/save?employeeId=${storedId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
                 })
-                .catch(error => console.error('Lỗi:', error));
-
-
-
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Data submitted successfully!');
+                            closePopup();
+                            alert("You have successfully submitted the leave application.");
+                            toast.success('' );
+                            setStartDate("");
+                            setEndDate("");
+                        } else {
+                            console.error('Error submitting data.');
+                            // Handle error if needed
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            } else {
+                alert("The number of days off requested exceeds your remaining days off.");
+                console.log('kết thúc');
+            }
         }
     };
 
@@ -310,6 +323,13 @@ export default function LeaveList() {
             closePopup();
         }
     };
+    const getCurrentDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate() + 1).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     return (
         <Layout>
@@ -317,11 +337,11 @@ export default function LeaveList() {
             <div class="flex justify-between items-center bg-blue-50 p-4">
                 <h1 class="text-2xl font-semibold">Leave List</h1>
                 <button class="px-4 py-2 bg-blue-500 text-white rounded-md"
-                 onClick={openPopup}
+                    onClick={openPopup}
                 >
                     Register Leave
                 </button>
-              
+
                 {isPopupOpen && (
                     <div className="popup">
                         <div className="popup-inner p-4 rounded-lg flex bg-blue-50 justify-center">
@@ -347,6 +367,17 @@ export default function LeaveList() {
                                     />
                                 </div>
                                 <div className="form-group flex justify-between my-2">
+                                    <label htmlFor="department" className="my-auto">Số ngày nghỉ còn lại:</label>
+                                    <input
+                                        type="text"
+                                        id="role"
+                                        name="role"
+                                        value={dayOffRemaining}
+                                        className="border-1 outline-none bg-gray-300 pl-2 h-10 rounded-lg w-64 pr-2 ml-16"
+                                        disabled
+                                    />
+                                </div>
+                                <div className="form-group flex justify-between my-2">
                                     <label htmlFor="leaveDates" className="my-auto">Ngày bắt đầu: </label>
 
                                     <input
@@ -355,6 +386,7 @@ export default function LeaveList() {
                                         style={{ outline: "none" }}
                                         value={startDate} // Đặt giá trị của input bằng giá trị của trạng thái
                                         onChange={handleStartDateChange}
+                                        min={getCurrentDate()}
                                     />
 
                                 </div>
@@ -367,6 +399,7 @@ export default function LeaveList() {
                                         style={{ outline: "none" }}
                                         value={endDate} // Đặt giá trị của input bằng giá trị của trạng thái
                                         onChange={handleEndDateChange}
+                                        min={getCurrentDate()}
                                     />
 
                                 </div>
@@ -393,7 +426,7 @@ export default function LeaveList() {
                     </div>
                 )}
             </div>
-            
+
             <div className="flex my-10 h-screen bg-blue-50 dark:bg-zinc-800">
                 <div className="container mx-auto">
                     <DataTableExtensions {...tableData}>
@@ -477,6 +510,16 @@ export default function LeaveList() {
                                     </div>
 
                                 </form>
+                                <ToastContainer
+                        className="toast-container"
+                        toastClassName="toast"
+                        bodyClassName="toast-body"
+                        progressClassName="toast-progress"
+                        theme='colored'
+                        transition={Zoom}
+                        autoClose={5}
+                        hideProgressBar={true}
+                    ></ToastContainer>
                                 {/* Add your view details content here */}
                             </div>
                         </div>
