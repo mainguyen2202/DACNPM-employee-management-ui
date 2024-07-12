@@ -27,7 +27,7 @@ export default function Profile() {
 
   const fetchUserData = async (userId) => {
     try {
-      const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`);
+      const response = await fetch(`http://localhost:8080/api/employees/${userId}`);
       if (response.ok) {
         const userData = await response.json();
         setUsername(userData.username);
@@ -49,7 +49,7 @@ export default function Profile() {
     };
 
     try {
-      const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`, {
+      const response = await fetch(`http://localhost:8080/api/employees/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

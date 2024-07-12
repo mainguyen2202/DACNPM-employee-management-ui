@@ -20,9 +20,9 @@ export default function Forgot() {
     //     };
 
     //     try {
-    //         // https://employee-leave-api.onrender.com
-    //         // https://employee-leave-api.onrender.com
-    //         const response = await fetch(" https://employee-leave-api.onrender.com/api/forgot-password/verify-email", {
+    //         // http://localhost:8080
+    //         // http://localhost:8080
+    //         const response = await fetch(" http://localhost:8080/api/forgot-password/verify-email", {
     //             method: "POST",
     //             headers: { 'content-type': 'application/json' },
     //             body: JSON.stringify(forgotPasswordDTO)
@@ -52,9 +52,9 @@ export default function Forgot() {
         };
 
         try {
-            // https://employee-leave-api.onrender.com
-            // https://employee-leave-api.onrender.com
-            const response = await fetch(`https://employee-leave-api.onrender.com/api/forgot-password/verify-email/${email}`, {
+            // http://localhost:8080
+            // http://localhost:8080
+            const response = await fetch(`http://localhost:8080/api/forgot-password/verify-email/${email}`, {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(forgotPasswordDTO)
@@ -120,8 +120,7 @@ export default function Forgot() {
                             Send OTP
                         </button>
 
-                        <p className="text-sm opacity-50">
-                            {/* eslint-disable-next-line react/no-unescaped-entities */}
+                        {/* <p className="text-sm opacity-50">
                             Don't have an account?{" "}
                             <a href="/auth/reset" className="text-blue-500">
                                 Reset
@@ -129,7 +128,7 @@ export default function Forgot() {
                             <a href="/auth/otp" className="text-blue-500">
                                 otp
                             </a>
-                        </p>
+                        </p> */}
                     </form>
                     <ToastContainer
                         className="toast-container"

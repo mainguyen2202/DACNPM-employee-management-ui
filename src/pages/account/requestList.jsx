@@ -26,7 +26,7 @@ export default function RequestList() {
         userId = sessionStorage.getItem('userId');
     }
     useEffect(() => {
-        fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`http://localhost:8080e/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
@@ -35,7 +35,7 @@ export default function RequestList() {
     useEffect(() => {
         const fetchLeaveRequests = async () => {
             try {
-                const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
+                const response = await fetch(`http://localhost:8080/api/leave-applications/get-by-handle-by/${userId}`);
                 const data = await response.json();
                 setRequestList(data);
 
@@ -51,7 +51,7 @@ export default function RequestList() {
 
     const fetchLeaveRequests = async () => {
         try {
-            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
+            const response = await fetch(`http://localhost:8080/get-by-handle-by/${userId}`);
             const data = await response.json();
 
             // Lọc ra các request có status = 2
@@ -114,7 +114,7 @@ export default function RequestList() {
                         display: "inline-block"
                     }}
                 >
-                    {row.status === 1 ? "" : row.reasonReject}
+                    {row.status === 1 ? row.reasonReject : row.reasonReject}
                 </div>
             )
         },
@@ -125,7 +125,7 @@ export default function RequestList() {
             selector: "action",
             cell: (row) => (
                 <div>
-                 
+
                     <button
                         onClick={() => handleView(row.id)}
                         style={{
@@ -154,7 +154,7 @@ export default function RequestList() {
 
     const handleView = async (idLeave) => {
         try {
-            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`);
+            const response = await fetch(`http://localhost:8080/api/leave-applications/${idLeave}`);
             let employeeData = {};
             if (response.ok) {
                 itinerarieData = await response.json();
@@ -166,7 +166,7 @@ export default function RequestList() {
                 setDateStart(itinerarieData.from); // Assign the value to dateStart state variable
                 setDateEnd(itinerarieData.to); // Assign the value to dateEnd state variable
                 setReason(itinerarieData.reason);
-                setReasonBoss(itinerarieData.reason_reject);
+                setReasonBoss(itinerarieData.reasonReject);
                 setStatus(itenerarieData.status);
 
             } else {
@@ -189,12 +189,17 @@ export default function RequestList() {
     const [dateStart, setDateStart] = useState('');
     const [dateEnd, setDateEnd] = useState('');
     const [reason, setReason] = useState('');
-    const [reasonBoss, setReasonBoss] = useState('');
+    // const [reasonBoss, setReasonBoss] = useState('');
     const [status, setStatus] = useState();
     const [id, setId] = useState();
     let [itinerarieData, setItinerarieData] = useState({});
     const [statusChanged, setStatusChanged] = useState(false);
+    const [reasonBoss, setReasonBoss] = useState('');
 
+    // Khi người dùng nhập dữ liệu vào textarea
+    const handleReasonBossChange = (event) => {
+      setReasonBoss(event.target.value);
+    };
 
     useEffect(() => {
         if (statusChanged) {
@@ -208,13 +213,13 @@ export default function RequestList() {
 
         console.log(idLeave);
         try {
-            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/approve/${idLeave}`, {
+            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idLeave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    reasonReject: reasonBoss,
+                    reasonReject: reasonBoss ? reasonBoss : 'NO',
                     status: 0,
                 }),
             });
@@ -237,32 +242,36 @@ export default function RequestList() {
         }
     };
 
-    const handleApprove = async (idleave, reasonBoss) => {
+    const handleApprove = async (idLeave, reasonBoss) => {
+
         try {
-            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/approve/${idleave}`, {
+            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idLeave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     status: 1,
-                    reasonReject: reasonBoss
+                    reasonReject: reasonBoss ? reasonBoss : 'OK',
                 })
             });
 
-            if (response.ok) {
+            if (response.status === 200) {
                 setStatusChanged(true);
                 const data = await response.json();
                 console.log(data);
-                toast.success("Đơn đã được duyệt thành công.");
+                toast.success("The unit has been successfully approved.");
+                alert("");
                 closePopup();
             } else {
-                console.log('Approval failed');
-                toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
+                const errorData = await response.json();
+                console.log('Approval failed:', errorData);
+                // toast.warning(`Đã xảy ra lỗi khi duyệt đơn: ${errorData.message}`);
+                toast.success("The unit has been error approved.");
             }
         } catch (error) {
             console.log('Error:', error);
-            toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
+            //   toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
         }
     };
 
@@ -385,16 +394,17 @@ export default function RequestList() {
                                             className="border-1 outline-none bg-gray-300 pl-2 pt-2 h-16 rounded-lg w-64 pr-2"
                                             maxLength={100}
                                             value={reasonBoss}
-                                        // onChange={handleBossAction}
+                                        onChange={handleReasonBossChange }
                                         ></textarea>
                                     </div>
+                                  
                                     <div className="form-buttons flex justify-center gap-4">
 
 
                                         <button type="button" onClick={() => handleReject(id, reasonBoss)} className="btn bg-red-500 px-4 py-2 rounded-lg text-white">
                                             Từ chối
                                         </button>
-                                        <button type="button" onClick={() => handleApprove(id, reasonBoss)} className="btn bg-blue-500 px-4 py-2 rounded-lg text-white">
+                                        <button type="button" onClick={(e) => handleApprove(id, reasonBoss)} className="btn bg-blue-500 px-4 py-2 rounded-lg text-white">
                                             Chấp nhận
                                         </button>
                                     </div>

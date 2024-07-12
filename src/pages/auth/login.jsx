@@ -30,18 +30,18 @@ export default function Login() {
         console.log('Username:', username);
         console.log('Password:', pass);
         try {
-            const response = await fetch("https://employee-leave-api.onrender.com/api/login", {
+            const response = await fetch("http://localhost:8080/api/login", {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(loginDTO)
             });
-            console.log("response" + response.status);
-            console.log("response" + response);
+            // console.log("response" + response.status);
+            // console.log("response" + response);
             const userId = await response.json();
             if (response.status === 200) {
                 if (userId !== null) {
                     sessionStorage.setItem('userId', userId);
-                    const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`, {
+                    const response = await fetch(`http://localhost:8080/api/employees/${userId}`, {
                         method: "GET",
                         headers: { 'content-type': 'application/json' }
                     });
