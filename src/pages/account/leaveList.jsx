@@ -147,11 +147,37 @@ export default function LeaveList() {
 
     const [showModal, setShowModal] = useState(false);
 
-    const handleDelete = () => {
-        // Implement delete logic here
-        console.log('Delete row:', row.id);
-    };
-
+    const handleDelete = async (idLeave) => {
+        try {
+          const response = await fetch(
+            `https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+      
+          if (response.status === 200) {
+            const data = await response.json();
+      
+            if (data.status === 1) {
+              toast.success(data.message);
+              window.location.reload(); // Tải lại trang
+              // Update the leaveList state by filtering out the deleted item
+              setLeaveList((prevList) => prevList.filter((item) => item.id !== idLeave));
+            } else {
+              toast.error(data.message);
+            }
+          } else {
+            console.log('Deletion failed');
+          }
+        } catch (error) {
+          console.error('Error deleting leave application:', error);
+          toast.error('Failed to delete leave application');
+        }
+      };
     const handleView = async (idLeave) => {
         try {
             const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`);
@@ -250,7 +276,7 @@ export default function LeaveList() {
             const numDaysOff = calculateDaysBetweenDates(new Date(startDate), new Date(endDate));
             console.log('numDaysOff', numDaysOff);
             console.log('numDaysOff', dayOffRemaining);
-           
+
 
             // Check if the number of days off is less than or equal to the remaining days off
             if (parseInt(numDaysOff) <= parseInt(dayOffRemaining)) {
@@ -273,7 +299,7 @@ export default function LeaveList() {
                             console.log('Data submitted successfully!');
                             closePopup();
                             alert("You have successfully submitted the leave application.");
-                            toast.success('' );
+                            toast.success('');
                             setStartDate("");
                             setEndDate("");
                         } else {
@@ -511,15 +537,15 @@ export default function LeaveList() {
 
                                 </form>
                                 <ToastContainer
-                        className="toast-container"
-                        toastClassName="toast"
-                        bodyClassName="toast-body"
-                        progressClassName="toast-progress"
-                        theme='colored'
-                        transition={Zoom}
-                        autoClose={5}
-                        hideProgressBar={true}
-                    ></ToastContainer>
+                                    className="toast-container"
+                                    toastClassName="toast"
+                                    bodyClassName="toast-body"
+                                    progressClassName="toast-progress"
+                                    theme='colored'
+                                    transition={Zoom}
+                                    autoClose={5}
+                                    hideProgressBar={true}
+                                ></ToastContainer>
                                 {/* Add your view details content here */}
                             </div>
                         </div>
