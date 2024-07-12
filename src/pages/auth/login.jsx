@@ -4,7 +4,7 @@ import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { Layout } from "@/components/account";
-
+import {warning,success, showToastRight } from "@/services/alert.service";
 export default function Login() {
     const [username, setUsername] = useState('');
     const [pass, setPassword] = useState('');
@@ -20,7 +20,6 @@ export default function Login() {
         e.preventDefault();
         if (!validate()) {
             return;
-
         }
         const loginDTO = {
             username: username,
@@ -49,12 +48,15 @@ export default function Login() {
                     const userInfo = await response.json();
                     console.log(userInfo);
                 }
+                toast.success('Login successfully');
                 router.push('/account/leaveList');
             } else {
-                toast.error('Failed: ' + response.status); // Hiển thị thông báo lỗi trong giao diện
+                toast.error('Failed: ' + response.status); 
+                console.log('loi status tra ve')// Hiển thị thông báo lỗi trong giao diện
             }
         } catch (err) {
-            toast.error('Failed: ' + err.message); // Hiển thị thông báo lỗi trong giao diện
+            toast.error('Failed: ' + err.message);
+            console.log('loi he thong'+ err.message) // Hiển thị thông báo lỗi trong giao diện
         }
     };
 
@@ -76,7 +78,7 @@ export default function Login() {
         if (pass.length < 8) {
             result = false;
             console.log('Password must be at least 8 characters long');
-            alert('Password must be at least 8 characters long');
+            toast.warning('Password must be at least 8 characters long');
         }
         return result;
     };
@@ -128,7 +130,7 @@ export default function Login() {
                         progressClassName="toast-progress"
                         theme='colored'
                         transition={Zoom}
-                        autoClose={5}
+                        autoClose={10}
                         hideProgressBar={true}
                     ></ToastContainer>
                 </main>

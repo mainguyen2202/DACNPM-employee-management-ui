@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'
 import { Layout } from "@/components/account";
 import "./css/otp.css";
+import {warning,success, showToastRight,error } from "@/services/alert.service";
 
 export default function Otp() {
     const [verificationCode, setVerificationCode] = useState([]);
@@ -59,15 +60,15 @@ export default function Otp() {
                     router.push('/auth/reset-password');
                 } else {
                     // Verification failed, display an error message
-                    alert(data.message || 'Invalid verification code. Please try again.');
+                    toast.warning(data.message || 'Invalid verification code. Please try again.');
                 }
             } else {
                 // Verification failed, display an error message
-                alert('An error occurred while verifying the code. Please try again later.');
+                toast.error('An error occurred while verifying the code. Please try again later.');
             }
         } catch (error) {
             console.error('Error verifying code:', error);
-            alert('An error occurred while verifying the code. Please try again later.');
+            toast.error('An error occurred while verifying the code. Please try again later.');
         }
     };
 
@@ -104,7 +105,7 @@ export default function Otp() {
                         progressClassName="toast-progress"
                         theme="colored"
                         transition={Zoom}
-                        autoClose={5}
+                        autoClose={10}
                         hideProgressBar={true}
                     ></ToastContainer>
                 </main>

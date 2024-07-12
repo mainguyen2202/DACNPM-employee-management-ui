@@ -1,9 +1,7 @@
 import { Layout } from "@/components/account";
 import { useEffect, useState } from "react";
 import { Nav } from "@/components/Nav.jsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Link from 'next/link';
+import {warning,success, showToastRight } from "@/services/alert.service";
 
 import DataTable from "react-data-table-component";
 
@@ -25,7 +23,7 @@ export default function RequestList() {
         userId = sessionStorage.getItem('userId');
     }
     useEffect(() => {
-        fetch(`https://employee-leave-api.onrender.come-api.onrender.com/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
@@ -214,7 +212,7 @@ export default function RequestList() {
                 console.log(data);
 
                 closePopup();
-                alert("Đơn đã được từ chối.");
+                toast.success("Đơn đã được từ chối.");
                 if (data.status === 0) {
                     toast.success(data.message);
                 } else {
@@ -243,15 +241,15 @@ export default function RequestList() {
                 setStatusChanged(true);
                 const data = await response.json();
                 console.log(data);
-                alert("Đơn đã được duyệt thành công.");
+                toast.success("Đơn đã được duyệt thành công.");
                 closePopup();
             } else {
                 console.log('Approval failed');
-                alert("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
+                toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
             }
         } catch (error) {
             console.log('Error:', error);
-            alert("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
+            toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
         }
     };
 

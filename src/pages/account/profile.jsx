@@ -37,12 +37,10 @@ export default function Profile() {
         setPosition(userData.position);
       };
   
-    const updateProfile = async ( userId) => {
-    //   e.preventDefault();
+    const updateProfile = async (userId) => {
+    console.log(userId);
       const updatedData = {
-       
-      
-        fullName,
+        fullName: fullName,
        
       };
      
@@ -55,6 +53,7 @@ export default function Profile() {
       });
       if (response.ok) {
         console.log('Profile updated successfully');
+        toast.success('Profile updated successfully');
       } else {
         console.error('Failed to update profile');
       }
@@ -113,7 +112,7 @@ export default function Profile() {
                         progressClassName="toast-progress"
                         theme='colored'
                         transition={Zoom}
-                        autoClose={5}
+                        autoClose={10}
                         hideProgressBar={true}
                     ></ToastContainer>
                 </main>
