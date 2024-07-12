@@ -1,7 +1,7 @@
 import { Layout } from "@/components/account";
 import { useEffect, useState } from "react";
 import { Nav } from "@/components/Nav.jsx";
-import {warning,success, showToastRight } from "@/services/alert.service";
+import { warning, success, showToastRight } from "@/services/alert.service";
 
 import DataTable from "react-data-table-component";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -48,6 +48,30 @@ export default function RequestList() {
 
         fetchLeaveRequests();
     }, [userId]);
+
+    const fetchLeaveRequests = async () => {
+        try {
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
+            const data = await response.json();
+
+            // Lọc ra các request có status = 2
+            const approvedRequests = data.filter(request => request.status === 2);
+
+            // Sắp xếp các request theo thứ tự mới nhất
+            const sortedRequests = approvedRequests.sort((a, b) => new Date(b.from) - new Date(a.from));
+
+            // Lấy ra request mới nhất
+            const latestRequest = sortedRequests[0];
+
+            setRequestList(sortedRequests);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
+
+
+
 
     const dataTableColumns = [
         { name: 'ID', selector: row => row.id, sortable: true },
@@ -264,9 +288,14 @@ export default function RequestList() {
             <Nav />
             <div class="flex justify-between items-center bg-blue-50 p-4">
                 <h1 className="text-2xl font-semibold ">Request List</h1>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded-md relative">
+                <button
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md relative"
+                    onClick={fetchLeaveRequests}
+                >
                     <i className="fas fa-bell"></i>
-                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 text-xs rounded-full">{totalRequestsWithStatus2}</span>
+                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 text-xs rounded-full">
+                        {totalRequestsWithStatus2}
+                    </span>
                 </button>
             </div>
             <div className="flex my-10 h-screen bg-blue-50 dark:bg-zinc-800">
