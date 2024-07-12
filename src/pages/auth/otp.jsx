@@ -10,7 +10,7 @@ import { warning, success, showToastRight, error } from "@/services/alert.servic
 export default function Otp() {
     const [verificationCode, setVerificationCode] = useState([]);
     const [email, setEmail] = useState('');
-
+    const router = useRouter();
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const storedEmail = localStorage.getItem('email');
@@ -30,51 +30,53 @@ export default function Otp() {
 
     const handleVerify = async (e) => {
         e.preventDefault();
-        try {
-            // Construct the request payload
-            const payload = {
-                email,
-                verificationCode: verificationCode.join(''),
-            };
-            console.log('email', email);
-            console.log('verificationCode', verificationCode);
+        // try {
+        // Construct the request payload
+        let otp = verificationCode.join('');
+        const payload = {
+            email,
+            verificationCode: otp
+        };
+        console.log('email', email);
+        console.log('verificationCode', otp);
 
-            // Send a POST request to the server to verify the code
-            const response = await fetch(
-                `http://localhost:8080/api/forgot-password/verify-otp/${verificationCode}/${email}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload),
-                }
-
-            );
-            console.log('response', response);
-
-            if (response.status === 200) {
-
-                // Verification successful, redirect to the password reset page
-                router.push('/auth/reset-password');
-                // Parse the response JSON data
-                const data = await response.json();
-
-                // Check if the verification was successful
-
-
-
-                // Verification failed, display an error message
-                toast.warning(data.message || 'Invalid verification code. Please try again.');
-
-            } else {
-                // Verification failed, display an error message
-                toast.error('An error occurred while verifying the code. Please try again later.');
+        // Send a POST request to the server to verify the code
+        const response = await fetch(
+            `http://localhost:8080/api/forgot-password/verify-otp/${otp}/${email}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
             }
-        } catch (error) {
-            console.error('Error verifying code:', error);
+
+        );
+        console.log('response', payload);
+        // router.push('/auth/reset-password');
+
+        if (response.status === 200) {
+
+            // Verification successful, redirect to the password reset page
+            router.push('/auth/reset');
+            // Parse the response JSON data
+            const data = await response.json();
+
+            // Check if the verification was successful
+
+
+
+            // Verification failed, display an error message
+            toast.warning(data.message || 'Invalid verification code. Please try again.');
+
+        } else {
+            // Verification failed, display an error message
             toast.error('An error occurred while verifying the code. Please try again later.');
         }
+        // } catch (error) {
+        //     // console.error('Error verifying code:', error);
+        //     toast.error('An error occurred while verifying the code. Please try again later.');
+        // }
     };
 
     return (
