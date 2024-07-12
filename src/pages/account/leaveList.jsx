@@ -26,14 +26,14 @@ export default function LeaveList() {
     }
 
     useEffect(() => {
-        fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
     }, []);
 
     useEffect(() => {
-        fetch(`https://employee-leave-api.onrender.come/api/leave-applications/get-by-employee-id/${userId}`)
+        fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-employee-id/${userId}`)
             .then((response) => {
                 console.log(response);
                 return response.json()
@@ -150,7 +150,7 @@ export default function LeaveList() {
     const handleDelete = async (idLeave) => {
         try {
           const response = await fetch(
-            `https://employee-leave-api.onrender.come/api/leave-applications/${idLeave}`,
+            `https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`,
             {
               method: 'DELETE',
               headers: {
@@ -180,7 +180,7 @@ export default function LeaveList() {
       };
     const handleView = async (idLeave) => {
         try {
-            const response = await fetch(`https://employee-leave-api.onrender.come/api/leave-applications/${idLeave}`);
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/${idLeave}`);
 
             if (response.ok) {
                 const itinerarieData = await response.json();
@@ -231,7 +231,7 @@ export default function LeaveList() {
 
 
                 // Gọi API với ID từ localStorage
-                const response = await fetch(`https://employee-leave-api.onrender.come/api/employees/${storedId}`);
+                const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${storedId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch employee data');
                 }
@@ -287,7 +287,7 @@ export default function LeaveList() {
                 };
 
                 // Send the data
-                fetch(`https://employee-leave-api.onrender.come/api/leave-applications/save?employeeId=${storedId}`, {
+                fetch(`https://employee-leave-api.onrender.com/api/leave-applications/save?employeeId=${storedId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

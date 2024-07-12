@@ -19,7 +19,7 @@ function Nav() {
     const router = useRouter();
 
     const fetchBossId = async (userId) => {
-        const response = await fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`, {
+        const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`, {
             method: "GET",
             headers: { 'content-type': 'application/json' }
         });

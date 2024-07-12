@@ -36,8 +36,8 @@ export default function Reset() {
         };
 
         try {
-            // https://employee-leave-api.onrender.come
-            const response = await fetch(`https://employee-leave-api.onrender.come/api/employees/change-password/${email}`, {
+            // https://employee-leave-api.onrender.com
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/change-password/${email}`, {
                 method: "PUT",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(resetPasswordDTO)
