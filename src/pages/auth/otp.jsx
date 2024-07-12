@@ -42,7 +42,7 @@ export default function Otp() {
 
         // Send a POST request to the server to verify the code
         const response = await fetch(
-            `http://localhost:8080/api/forgot-password/verify-otp/${otp}/${email}`,
+            `https://employee-leave-api.onrender.come/api/forgot-password/verify-otp/${otp}/${email}`,
             {
                 method: 'POST',
                 headers: {

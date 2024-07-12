@@ -30,7 +30,7 @@ export default function Login() {
         console.log('Username:', username);
         console.log('Password:', pass);
         try {
-            const response = await fetch("http://localhost:8080/api/login", {
+            const response = await fetch("https://employee-leave-api.onrender.come/api/login", {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(loginDTO)
@@ -41,7 +41,7 @@ export default function Login() {
             if (response.status === 200) {
                 if (userId !== null) {
                     sessionStorage.setItem('userId', userId);
-                    const response = await fetch(`http://localhost:8080/api/employees/${userId}`, {
+                    const response = await fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`, {
                         method: "GET",
                         headers: { 'content-type': 'application/json' }
                     });

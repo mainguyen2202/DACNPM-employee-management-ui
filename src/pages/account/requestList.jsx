@@ -26,7 +26,7 @@ export default function RequestList() {
         userId = sessionStorage.getItem('userId');
     }
     useEffect(() => {
-        fetch(`http://localhost:8080e/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
@@ -35,7 +35,7 @@ export default function RequestList() {
     useEffect(() => {
         const fetchLeaveRequests = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/leave-applications/get-by-handle-by/${userId}`);
+                const response = await fetch(`https://employee-leave-api.onrender.come/api/leave-applications/get-by-handle-by/${userId}`);
                 const data = await response.json();
                 setRequestList(data);
 
@@ -51,7 +51,7 @@ export default function RequestList() {
 
     const fetchLeaveRequests = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/get-by-handle-by/${userId}`);
+            const response = await fetch(`https://employee-leave-api.onrender.come/get-by-handle-by/${userId}`);
             const data = await response.json();
 
             // Lọc ra các request có status = 2
@@ -154,7 +154,7 @@ export default function RequestList() {
 
     const handleView = async (idLeave) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/${idLeave}`);
+            const response = await fetch(`https://employee-leave-api.onrender.come/api/leave-applications/${idLeave}`);
             let employeeData = {};
             if (response.ok) {
                 itinerarieData = await response.json();
@@ -213,7 +213,7 @@ export default function RequestList() {
 
         console.log(idLeave);
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idLeave}`, {
+            const response = await fetch(`https://employee-leave-api.onrender.come/api/leave-applications/approve/${idLeave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -245,7 +245,7 @@ export default function RequestList() {
     const handleApprove = async (idLeave, reasonBoss) => {
 
         try {
-            const response = await fetch(`http://localhost:8080/api/leave-applications/approve/${idLeave}`, {
+            const response = await fetch(`https://employee-leave-api.onrender.come/api/leave-applications/approve/${idLeave}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

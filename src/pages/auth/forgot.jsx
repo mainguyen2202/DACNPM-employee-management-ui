@@ -20,9 +20,9 @@ export default function Forgot() {
     //     };
 
     //     try {
-    //         // http://localhost:8080
-    //         // http://localhost:8080
-    //         const response = await fetch(" http://localhost:8080/api/forgot-password/verify-email", {
+    //         // https://employee-leave-api.onrender.come
+    //         // https://employee-leave-api.onrender.come
+    //         const response = await fetch(" https://employee-leave-api.onrender.come/api/forgot-password/verify-email", {
     //             method: "POST",
     //             headers: { 'content-type': 'application/json' },
     //             body: JSON.stringify(forgotPasswordDTO)
@@ -52,9 +52,9 @@ export default function Forgot() {
         };
 
         try {
-            // http://localhost:8080
-            // http://localhost:8080
-            const response = await fetch(`http://localhost:8080/api/forgot-password/verify-email/${email}`, {
+            // https://employee-leave-api.onrender.come
+            // https://employee-leave-api.onrender.come
+            const response = await fetch(`https://employee-leave-api.onrender.come/api/forgot-password/verify-email/${email}`, {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(forgotPasswordDTO)
