@@ -82,10 +82,11 @@ export default function Otp() {
     return (
         <>
             <Layout>
-                <main className="flex min-h-screen flex-col items-center justify-between p-24">
+            <main >
                     <form
                         id="yourFormId"
                         className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30"
+                        style={{marginTop:'-100%'}}
                     >
                         <h1 className="mb-8 text-3xl font-semibold text-center">Email Verification</h1>
                         <p>We have sent a code to your email</p>
@@ -101,9 +102,15 @@ export default function Otp() {
                                 />
                             ))}
                         </div>
-                        <button className="verify-button" onClick={handleVerify}>
+
+                        <button
+                            type="submit"
+                            className="verify-button w-full p-4 mb-4 text-white bg-gradient-to-r from-sky-500  rounded-lg"
+                            onClick={handleVerify}
+                        >
                             Verify Account
                         </button>
+
                     </form>
                     <ToastContainer
                         className="toast-container"

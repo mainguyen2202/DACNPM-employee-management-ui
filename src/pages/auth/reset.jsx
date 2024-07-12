@@ -84,7 +84,7 @@ export default function Reset() {
     return (
         <>
             <Layout>
-                <main className="flex min-h-screen flex-col items-center justify-between p-24">
+            <main className="flex min-h-screen flex-col items-center justify-between p-24">
                     <form id="yourFormId"
                         className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30">
                         <h1 className="mb-8 text-3xl font-semibold text-center">Reset Password</h1>
