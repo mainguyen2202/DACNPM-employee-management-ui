@@ -47,11 +47,12 @@ export default function RequestList() {
         };
 
         fetchLeaveRequests();
+        // fetchLeaveSortRequests();
     }, [userId]);
 
-    const fetchLeaveRequests = async () => {
+    const fetchLeaveSortRequests = async () => {
         try {
-            const response = await fetch(`https://employee-leave-api.onrender.com/get-by-handle-by/${userId}`);
+            const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
             const data = await response.json();
 
             // Lọc ra các request có status = 2
@@ -283,7 +284,7 @@ export default function RequestList() {
                 <h1 className="text-2xl font-semibold ">Request List</h1>
                 <button
                     className="px-4 py-2 bg-blue-500 text-white rounded-md relative"
-                    onClick={fetchLeaveRequests}
+                    onClick={fetchLeaveSortRequests}
                 >
                     <i className="fas fa-bell"></i>
                     <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 text-xs rounded-full">
