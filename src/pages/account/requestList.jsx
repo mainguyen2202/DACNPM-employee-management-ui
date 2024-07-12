@@ -28,7 +28,7 @@ export default function RequestList() {
         userId = sessionStorage.getItem('userId');
     }
     useEffect(() => {
-        fetch(`https://employee-leave-api.onrender.come-api.onrender.com/api/employees/${userId}`).then((response) => response.json()).then((data) => {
+        fetch(`https://employee-leave-api.onrender.come/api/employees/${userId}`).then((response) => response.json()).then((data) => {
             setUserInfo(data);
             console.log(data);
         }).catch((error) => console.error("Error fetching data:", error));
@@ -37,7 +37,7 @@ export default function RequestList() {
     useEffect(() => {
         const fetchLeaveRequests = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/leave-applications/get-by-handle-by/${userId}`);
+                const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
                 const data = await response.json();
                 setRequestList(data);
 

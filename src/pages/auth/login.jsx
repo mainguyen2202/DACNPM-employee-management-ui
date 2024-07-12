@@ -31,7 +31,7 @@ export default function Login() {
         console.log('Username:', username);
         console.log('Password:', pass);
         try {
-            const response = await fetch("http://localhost:8080/api/login", {
+            const response = await fetch("https://employee-leave-api.onrender.com/api/login", {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(loginDTO)
@@ -42,14 +42,21 @@ export default function Login() {
             if (response.status === 200) {
                 if (userId !== null) {
                     sessionStorage.setItem('userId', userId);
-                    const response = await fetch(`http://localhost:8080/api/employees/${userId}`, {
+                    const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`, {
                         method: "GET",
                         headers: { 'content-type': 'application/json' }
                     });
                     const userInfo = await response.json();
                     console.log(userInfo);
+                    if((userInfo.bossId)=== null){
+                        router.push('/account/requestList'); 
+                    }{
+    
+                        router.push('/account/leaveList');
+                    }
                 }
-                router.push('/account/leaveList');
+               
+
             } else {
                 toast.error('Failed: ' + response.status); // Hiển thị thông báo lỗi trong giao diện
             }
