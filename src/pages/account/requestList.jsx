@@ -1,9 +1,7 @@
 import { Layout } from "@/components/account";
 import { useEffect, useState } from "react";
 import { Nav } from "@/components/Nav.jsx";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faArrowRight, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
-import Link from 'next/link';
+import {warning,success, showToastRight } from "@/services/alert.service";
 
 import DataTable from "react-data-table-component";
 import "@fortawesome/fontawesome-free/css/all.css";
@@ -219,7 +217,7 @@ export default function RequestList() {
                 console.log(data);
 
                 closePopup();
-                alert("Đơn đã được từ chối.");
+                toast.success("Đơn đã được từ chối.");
                 if (data.status === 0) {
                     toast.success(data.message);
                 } else {
@@ -248,15 +246,15 @@ export default function RequestList() {
                 setStatusChanged(true);
                 const data = await response.json();
                 console.log(data);
-                alert("Đơn đã được duyệt thành công.");
+                toast.success("Đơn đã được duyệt thành công.");
                 closePopup();
             } else {
                 console.log('Approval failed');
-                alert("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
+                toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
             }
         } catch (error) {
             console.log('Error:', error);
-            alert("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
+            toast.warning("Đã xảy ra lỗi khi duyệt đơn. Vui lòng thử lại sau.");
         }
     };
 

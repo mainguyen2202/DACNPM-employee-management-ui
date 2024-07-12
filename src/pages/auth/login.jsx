@@ -4,7 +4,7 @@ import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 import { Layout } from "@/components/account";
-
+import {warning,success, showToastRight } from "@/services/alert.service";
 export default function Login() {
     const [username, setUsername] = useState('');
     const [pass, setPassword] = useState('');
@@ -20,18 +20,20 @@ export default function Login() {
         e.preventDefault();
         if (!validate()) {
             return;
+
         }
         const loginDTO = {
             username: username,
             pass: pass,
         };
+        // Log the username and password
         console.log('Username:', username);
         console.log('Password:', pass);
         try {
             const response = await fetch("https://employee-leave-api.onrender.com/api/login", {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify(loginDTO),
+                body: JSON.stringify(loginDTO)
             });
             console.log("response" + response.status);
             console.log("response" + response);
@@ -41,7 +43,7 @@ export default function Login() {
                     sessionStorage.setItem('userId', userId);
                     const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`, {
                         method: "GET",
-                        headers: { 'content-type': 'application/json' },
+                        headers: { 'content-type': 'application/json' }
                     });
                     const userInfo = await response.json();
                     console.log(userInfo);

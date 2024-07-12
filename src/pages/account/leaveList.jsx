@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Link from 'next/link';
 import DataTable from "react-data-table-component";
+import { toast, ToastContainer, Zoom } from 'react-toastify';
 import "@fortawesome/fontawesome-free/css/all.css";
 
 // import DataTableExtensions from "react-data-table-component-extensions";
@@ -119,7 +120,7 @@ export default function LeaveList() {
                             cursor: "pointer"
                         }}
                     >
-                        <i className="fa fa-trash"></i>
+                        <i className="fa fa-trash">Delete</i>
 
                     </button>
                     <button
@@ -133,7 +134,7 @@ export default function LeaveList() {
                             cursor: "pointer"
                         }}
                     >
-                        <i className="fas fa-eye"></i>
+                        <i className="fas fa-eye">View</i>
                     </button>
                 </div>
             )

@@ -138,7 +138,7 @@ export default function Forgot() {
                         progressClassName="toast-progress"
                         theme='colored'
                         transition={Zoom}
-                        autoClose={5}
+                        autoClose={10}
                         hideProgressBar={true}
                     ></ToastContainer>
                 </main>

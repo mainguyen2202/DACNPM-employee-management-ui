@@ -6,7 +6,9 @@ export const alertService = {
     alert: alertSubject.asObservable(),
     success,
     error,
-    clear
+    clear,
+    warning,
+    showToastRight
 };
 
 function success(message, showAfterRedirect = false) {
@@ -20,6 +22,20 @@ function success(message, showAfterRedirect = false) {
 function error(message, showAfterRedirect = false) {
     alertSubject.next({
         type: 'alert-danger',
+        message,
+        showAfterRedirect
+    });
+}
+function warning(message, showAfterRedirect = false) {
+    alertSubject.next({
+        type: 'alert-warning',
+        message,
+        showAfterRedirect
+    });
+}
+function showToastRight(message, showAfterRedirect = false) {
+    alertSubject.next({
+        type: 'alert-right',
         message,
         showAfterRedirect
     });

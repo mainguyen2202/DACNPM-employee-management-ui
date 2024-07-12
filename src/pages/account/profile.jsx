@@ -59,6 +59,7 @@ export default function Profile() {
 
       if (response.ok) {
         console.log('Profile updated successfully');
+        toast.success('Profile updated successfully');
       } else {
         console.error('Failed to update profile');
       }

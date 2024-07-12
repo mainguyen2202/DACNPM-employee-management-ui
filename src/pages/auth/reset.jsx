@@ -4,6 +4,7 @@ import { toast, ToastContainer, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'
 import { Layout } from "@/components/account";
+import {warning,success, showToastRight,error } from "@/services/alert.service";
 
 export default function Reset() {
 
@@ -66,7 +67,7 @@ export default function Reset() {
         } else if (newPassword.length < 8) {
             result = false;
             console.log('New Password must be at least 8 characters long');
-            alert('New Password must be at least 8 characters long');
+            toast.warning('New Password must be at least 8 characters long');
         }
 
         if (confirmPassword === '' || confirmPassword === null) {
@@ -75,7 +76,7 @@ export default function Reset() {
         } else if (newPassword !== confirmPassword) {
             result = false;
             console.log('New Password and Confirm Password do not match');
-            alert('New Password and Confirm Password do not match');
+            toast.warning('New Password and Confirm Password do not match');
         }
 
         return result;
@@ -119,7 +120,7 @@ export default function Reset() {
                         progressClassName="toast-progress"
                         theme='colored'
                         transition={Zoom}
-                        autoClose={5}
+                        autoClose={10}
                         hideProgressBar={true}
                     ></ToastContainer>
                 </main>
