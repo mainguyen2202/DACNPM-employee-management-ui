@@ -20,21 +20,18 @@ export default function Login() {
         e.preventDefault();
         if (!validate()) {
             return;
-
         }
         const loginDTO = {
             username: username,
-            pass: pass
-            // email:email
+            pass: pass,
         };
-        // Log the username and password
         console.log('Username:', username);
         console.log('Password:', pass);
         try {
             const response = await fetch("https://employee-leave-api.onrender.com/api/login", {
                 method: "POST",
                 headers: { 'content-type': 'application/json' },
-                body: JSON.stringify(loginDTO)
+                body: JSON.stringify(loginDTO),
             });
             console.log("response" + response.status);
             console.log("response" + response);
@@ -44,24 +41,21 @@ export default function Login() {
                     sessionStorage.setItem('userId', userId);
                     const response = await fetch(`https://employee-leave-api.onrender.com/api/employees/${userId}`, {
                         method: "GET",
-                        headers: { 'content-type': 'application/json' }
+                        headers: { 'content-type': 'application/json' },
                     });
                     const userInfo = await response.json();
                     console.log(userInfo);
-                    if((userInfo.bossId)=== null){
-                        router.push('/account/requestList'); 
-                    }{
-    
+                    if (userInfo.bossId === null) {
+                        router.push('/account/requestList');
+                    } else {
                         router.push('/account/leaveList');
                     }
                 }
-               
-
             } else {
-                toast.error('Failed: ' + response.status); // Hiển thị thông báo lỗi trong giao diện
+                toast.error('Failed: ' + response.status);
             }
         } catch (err) {
-            toast.error('Failed: ' + err.message); // Hiển thị thông báo lỗi trong giao diện
+            toast.error('Failed: ' + err.message);
         }
     };
 
@@ -91,8 +85,11 @@ export default function Login() {
         <>
             <Layout>
                 <main className="flex min-h-screen flex-col items-center justify-between p-24">
-                    <form id="yourFormId"
-                        className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30">
+                    <form
+                        id="yourFormId"
+                        className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30"
+                        onSubmit={ProceedLogin}
+                    >
                         <h1 className="mb-8 text-3xl font-semibold text-center">Login</h1>
                         <input
                             value={username}
@@ -108,7 +105,7 @@ export default function Login() {
                             type="password"
                             placeholder="Password"
                         />
-                        <p  className="w-full p-4 mb-1  rounded-lg " >
+                        <p className="w-full p-4 mb-1 rounded-lg">
                             <a href="/auth/forgot" className="text-blue-500">
                                 Forgot password
                             </a>
@@ -116,7 +113,6 @@ export default function Login() {
                         <button
                             type="submit"
                             className="w-full p-4 mb-4 text-white bg-gradient-to-r from-sky-500 to-blue-500 rounded-lg"
-                            onClick={ProceedLogin}
                         >
                             Login
                         </button>
