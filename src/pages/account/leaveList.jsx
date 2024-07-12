@@ -6,6 +6,7 @@ import { faArrowLeft, faArrowRight, faEye, faTrash } from "@fortawesome/free-sol
 import Link from 'next/link';
 import DataTable from "react-data-table-component";
 import { toast, ToastContainer, Zoom } from 'react-toastify';
+import "@fortawesome/fontawesome-free/css/all.css";
 
 // import DataTableExtensions from "react-data-table-component-extensions";
 import "react-data-table-component-extensions/dist/index.css";
@@ -148,7 +149,8 @@ export default function LeaveList() {
     const [showModal, setShowModal] = useState(false);
 
     const handleDelete = () => {
-       
+        // Implement delete logic here
+        console.log('Delete row:', row.id);
     };
 
     const handleView = async (idLeave) => {
@@ -165,7 +167,7 @@ export default function LeaveList() {
                 setReasonBoss(itinerarieData.reasonReject);
                 setStatus(itinerarieData.status);
             } else {
-                toast.warning('Failed to fetch itinerary data');
+                console.log('Failed to fetch itinerary data');
             }
         } catch (error) {
             console.log('Error:', error);
@@ -218,7 +220,7 @@ export default function LeaveList() {
                     role: data.position,
                 });
             } catch (error) {
-                toast.error("Error fetching data:", error);
+                console.error("Error fetching data:", error);
             }
         };
 
@@ -236,7 +238,7 @@ export default function LeaveList() {
 
         if (!startDate || !endDate) {
             // Hiển thị cảnh báo nếu ngày không được chọn
-            toast.warning('Vui lòng chọn ngày bắt đầu và ngày kết thúc.');
+            alert("Vui lòng chọn ngày nghỉ trước khi gửi!");
             return;
         } else {
             const requestData = {
@@ -256,14 +258,14 @@ export default function LeaveList() {
                 .then(response => {
                     if (response.ok) {
                         console.log('Dữ liệu đã được gửi thành công!');
-                        toast.success("Bạn đã gửi đơn đăng ký thành công")
 
                         closePopup();
+                        alert("Bạn đã gửi đơn đăng ký thành công")
                         setStartDate("")
                         setEndDate("")
                         // Thực hiện các hành động khác (ví dụ: hiển thị thông báo)
                     } else {
-                        toast.error('Đã xảy ra lỗi khi gửi dữ liệu.');
+                        console.error('Đã xảy ra lỗi khi gửi dữ liệu.');
                         // Xử lý lỗi nếu cần
                     }
                 })
@@ -281,7 +283,7 @@ export default function LeaveList() {
         const selected = new Date(selectedDate);
 
         if (selected < today) {
-            toast.warning('Bạn không thể chọn ngày đã kết thúc.');
+            alert('Bạn không thể chọn ngày đã kết thúc.');
         } else {
             setStartDate(selectedDate);
         }
@@ -293,9 +295,9 @@ export default function LeaveList() {
         const selected = new Date(selectedDate);
 
         if (selected < today) {
-            toast.warning('Bạn không thể chọn ngày đã kết thúc.');
+            alert('Bạn không thể chọn ngày đã kết thúc.');
         } else if (selected < new Date(startDate)) {
-            toast.warning('Ngày kết thúc phải sau ngày bắt đầu.');
+            alert('Ngày kết thúc phải sau ngày bắt đầu.');
         } else {
             setEndDate(selectedDate);
         }

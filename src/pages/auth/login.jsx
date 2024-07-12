@@ -20,11 +20,11 @@ export default function Login() {
         e.preventDefault();
         if (!validate()) {
             return;
+
         }
         const loginDTO = {
             username: username,
-            pass: pass
-            // email:email
+            pass: pass,
         };
         // Log the username and password
         console.log('Username:', username);
@@ -47,16 +47,17 @@ export default function Login() {
                     });
                     const userInfo = await response.json();
                     console.log(userInfo);
+                    if (userInfo.bossId === null) {
+                        router.push('/account/requestList');
+                    } else {
+                        router.push('/account/leaveList');
+                    }
                 }
-                toast.success('Login successfully');
-                router.push('/account/leaveList');
             } else {
-                toast.error('Failed: ' + response.status); 
-                console.log('loi status tra ve')// Hiển thị thông báo lỗi trong giao diện
+                toast.error('Failed: ' + response.status);
             }
         } catch (err) {
             toast.error('Failed: ' + err.message);
-            console.log('loi he thong'+ err.message) // Hiển thị thông báo lỗi trong giao diện
         }
     };
 
@@ -78,7 +79,7 @@ export default function Login() {
         if (pass.length < 8) {
             result = false;
             console.log('Password must be at least 8 characters long');
-            toast.warning('Password must be at least 8 characters long');
+            alert('Password must be at least 8 characters long');
         }
         return result;
     };
@@ -86,8 +87,11 @@ export default function Login() {
         <>
             <Layout>
                 <main className="flex min-h-screen flex-col items-center justify-between p-24">
-                    <form id="yourFormId"
-                        className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30">
+                    <form
+                        id="yourFormId"
+                        className="flex flex-col items-center justify-between w-full max-w-md p-8 bg-white rounded-xl shadow-lg dark:bg-zinc-800/30"
+                        onSubmit={ProceedLogin}
+                    >
                         <h1 className="mb-8 text-3xl font-semibold text-center">Login</h1>
                         <input
                             value={username}
@@ -103,7 +107,7 @@ export default function Login() {
                             type="password"
                             placeholder="Password"
                         />
-                        <p  className="w-full p-4 mb-1  rounded-lg " >
+                        <p className="w-full p-4 mb-1 rounded-lg">
                             <a href="/auth/forgot" className="text-blue-500">
                                 Forgot password
                             </a>
@@ -111,7 +115,6 @@ export default function Login() {
                         <button
                             type="submit"
                             className="w-full p-4 mb-4 text-white bg-gradient-to-r from-sky-500 to-blue-500 rounded-lg"
-                            onClick={ProceedLogin}
                         >
                             Login
                         </button>
@@ -130,7 +133,7 @@ export default function Login() {
                         progressClassName="toast-progress"
                         theme='colored'
                         transition={Zoom}
-                        autoClose={10}
+                        autoClose={5}
                         hideProgressBar={true}
                     ></ToastContainer>
                 </main>

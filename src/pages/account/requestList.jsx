@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav.jsx";
 import {warning,success, showToastRight } from "@/services/alert.service";
 
 import DataTable from "react-data-table-component";
+import "@fortawesome/fontawesome-free/css/all.css";
 
 // import DataTableExtensions from "react-data-table-component-extensions";
 import "react-data-table-component-extensions/dist/index.css";
@@ -16,6 +17,8 @@ export default function RequestList() {
     const [requestList, setRequestList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
+
+    const [totalRequestsWithStatus2, setTotalRequestsWithStatus2] = useState(1);
     const [userInfo, setUserInfo] = useState({});
     let userId = 0;
     if (typeof window !== 'undefined') {
@@ -35,6 +38,9 @@ export default function RequestList() {
                 const response = await fetch(`https://employee-leave-api.onrender.com/api/leave-applications/get-by-handle-by/${userId}`);
                 const data = await response.json();
                 setRequestList(data);
+
+                const totalRequestsWithStatus2 = data.filter(request => request.status === 2).length;
+                setTotalRequestsWithStatus2(totalRequestsWithStatus2);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -53,23 +59,22 @@ export default function RequestList() {
             selector: "status",
             sortable: true,
             cell: (row) => (
-              <div
-                className={`px-3 py-1 rounded-md font-bold ${
-                  row.status === 1
-                    ? "bg-green-100 text-green-700"
-                    : row.status === 0
-                    ? "bg-red-100 text-red-700"
-                    : "bg-yellow-100 text-yellow-700"
-                }`}
-              >
-                {row.status === 1
-                  ? "Approved"
-                  : row.status === 0
-                  ? "Rejected"
-                  : "Pending"}
-              </div>
+                <div
+                    className={`px-3 py-1 rounded-md font-bold ${row.status === 1
+                        ? "bg-green-100 text-green-700"
+                        : row.status === 0
+                            ? "bg-red-100 text-red-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                >
+                    {row.status === 1
+                        ? "Approved"
+                        : row.status === 0
+                            ? "Rejected"
+                            : "Pending"}
+                </div>
             ),
-          },
+        },
         {
             name: "Reason",
             selector: "reasonReject",
@@ -107,7 +112,7 @@ export default function RequestList() {
                             cursor: "pointer"
                         }}
                     >
-                        <i className="fa fa-trash">Delete</i>
+                        <i className="fa fa-trash"></i>
 
                     </button>
                     <button
@@ -121,7 +126,7 @@ export default function RequestList() {
                             cursor: "pointer"
                         }}
                     >
-                        <i className="fas fa-eye">View</i>
+                        <i className="fas fa-eye"></i>
                     </button>
                 </div>
             )
@@ -257,8 +262,12 @@ export default function RequestList() {
     return (
         <Layout>
             <Nav />
-            <div className="flex bg-blue-50">
-                <h1 className="text-2xl font-semibold text-center">Request List</h1>
+            <div class="flex justify-between items-center bg-blue-50 p-4">
+                <h1 className="text-2xl font-semibold ">Request List</h1>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded-md relative">
+                    <i className="fas fa-bell"></i>
+                    <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white px-2 py-1 text-xs rounded-full">{totalRequestsWithStatus2}</span>
+                </button>
             </div>
             <div className="flex my-10 h-screen bg-blue-50 dark:bg-zinc-800">
                 <div className="container mx-auto">
